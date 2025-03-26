@@ -1,0 +1,24 @@
+dn: ou=users,dc=mondomaine,dc=com
+objectClass: organizationalUnit
+ou: users
+
+dn: cn=user1,ou=users,dc=mondomaine,dc=com
+objectClass: inetOrgPerson
+cn: user1
+sn: user1
+uid: user1
+userPassword: user1
+
+dn: cn=user2,ou=users,dc=mondomaine,dc=com
+objectClass: inetOrgPerson
+cn: user2
+sn: user2
+uid: user2
+userPassword: user2
+
+dn: cn=user3,ou=users,dc=mondomaine,dc=com
+objectClass: inetOrgPerson
+cn: user3
+sn: user3
+uid: user3
+userPassword: user3

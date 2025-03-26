@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+    <h1>Bienvenue</h1>
+    <p>{{ home_text }}</p>
+    {% if admin %}
+        <form method="post">
+            <label for="home_text">Modifier le texte : </label>
+            <input type="text" name="home_text" id="home_text" value="{{ home_text }}">
+            <button type="submit">Mettre à jour</button>
+        </form>
+    {% endif %}
+</body>
+</html>

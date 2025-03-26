@@ -1,0 +1,78 @@
+version: '3'
+
+services:
+  openldap:
+    build: ./ldap
+    environment:
+      - LDAP_ORGANISATION=MonOrganisation
+      - LDAP_DOMAIN=mondomaine.com
+      - LDAP_ADMIN_PASSWORD=admin
+    ports:
+      - "389:389"
+      - "636:636"
+    networks:
+      app-network:
+        ipv4_address: 172.29.0.5
+
+  keycloak:
+    build: ./keycloak
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_HEALTH_ENABLED=true
+    ports:
+      - "8080:8080"
+    depends_on:
+      - openldap
+    networks:
+      app-network:
+        ipv4_address: 172.29.0.3
+      
+
+  flask-app:
+    build: ./flask-app
+    environment:
+      - KEYCLOAK_URL=http://localhost:8080
+      - KEYCLOAK_REALM=mon-realm
+      - KEYCLOAK_CLIENT_ID=flask-app
+      - KEYCLOAK_CLIENT_SECRET=your-client-secret
+    ports:
+      - "5000:5000"
+    depends_on:
+      - keycloak
+    networks:
+      app-network:
+        ipv4_address: 172.29.0.4
+
+  ssh-server:
+    build: ./ssh-server
+    ports:
+      - "2222:22"
+    depends_on:
+      - openldap
+    networks:
+      app-network:
+        ipv4_address: 172.29.0.6
+
+  dns-proxy:
+      image: andyshinn/dnsmasq
+      container_name: dns-proxy
+      ports:
+          - "53:53/udp"
+          - "53:53/tcp"
+      networks:
+          app-network:
+            ipv4_address: 172.29.0.2
+      volumes:
+          - ./dnsmasq.conf:/etc/dnsmasq.conf
+      restart: always
+
+
+networks:
+  app-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.29.0.0/24
+          gateway: 172.29.0.1
+
