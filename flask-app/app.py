@@ -10,10 +10,13 @@ oauth = OAuth(app)
 
 keycloak = oauth.register(
     name='keycloak',
-    server_metadata_url=f'http://keycloak:8080/realms/{os.getenv("KEYCLOAK_REALM")}/.well-known/openid-configuration',
+    server_metadata_url=f'https://keycloak:8443/realms/{os.getenv("KEYCLOAK_REALM")}/.well-known/openid-configuration',
     client_id=os.getenv("KEYCLOAK_CLIENT_ID"),
     client_secret=os.getenv("KEYCLOAK_CLIENT_SECRET"),
-    client_kwargs={'scope': 'openid profile roles'},
+    client_kwargs={
+        'scope': 'openid profile roles',
+        'verify': False  # Pour le certificat auto-signé en développement
+    },
 )
 
 # Default text for home page

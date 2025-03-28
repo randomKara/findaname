@@ -21,6 +21,29 @@
         "profile",
         "roles"
       ]
+    },
+    {
+      "clientId": "flask-app-passkey",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "your-passkey-client-secret",
+      "redirectUris": ["http://localhost:5001/*"],
+      "webOrigins": ["http://localhost:5001"],
+      "defaultClientScopes": [
+        "openid",
+        "profile",
+        "roles"
+      ],
+      
+      "authenticationFlowBindingOverrides": {
+        "browser": "70ee2a6a-4de8-4121-a197-53113b433801"
+      }
     }
   ],
   "roles": {
@@ -703,6 +726,36 @@
           "priority": 10,
           "autheticatorFlow": false,
           "userSetupAllowed": false
+        }
+      ]
+    },
+    {
+      "id": "70ee2a6a-4de8-4121-a197-53113b433801",
+      "alias": "browser-webauthn",
+      "description": "Browser with WebAuthn",
+      "providerId": "basic-flow",
+      "topLevel": true,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {
+          "authenticator": "auth-cookie",
+          "requirement": "ALTERNATIVE",
+          "priority": 10
+        },
+        {
+          "authenticator": "auth-spnego",
+          "requirement": "DISABLED",
+          "priority": 20
+        },
+        {
+          "authenticator": "auth-username-form",
+          "requirement": "REQUIRED",
+          "priority": 25
+        },
+        {
+          "authenticator": "webauthn-authenticator",
+          "requirement": "REQUIRED",
+          "priority": 30
         }
       ]
     }
