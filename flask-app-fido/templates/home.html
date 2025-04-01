@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FIDO Home</title>
+    <script>
+        // Support WebAuthn/FIDO
+        if (window.PublicKeyCredential) {
+            console.log("WebAuthn is supported");
+        } else {
+            console.log("WebAuthn is not supported");
+        }
+    </script>
+</head>
+<body>
+    <h1>Bienvenue sur l'application FIDO</h1>
+    {% if authenticated %}
+        <p>Vous êtes connecté en tant que : {{ username }}</p>
+        <p><a href="https://keycloak:8443/realms/mon-realm/account/#/security/signingin" target="_blank">Gérer mes clés FIDO</a></p>
+        <button onclick="window.location.href='/logout'">Se déconnecter</button>
+    {% else %}
+        <p>Veuillez vous connecter avec votre clé FIDO</p>
+        <button onclick="window.location.href='/login'">Se connecter</button>
+    {% endif %}
+</body>
+</html> 

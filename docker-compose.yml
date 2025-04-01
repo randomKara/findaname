@@ -67,6 +67,24 @@ services:
     extra_hosts:
       - "keycloak:172.29.0.3"
 
+  flask-app-fido:
+    build: ./flask-app-fido
+    environment:
+      - KEYCLOAK_URL=https://keycloak:8443
+      - KEYCLOAK_REALM=mon-realm
+      - KEYCLOAK_CLIENT_ID=flask-app-fido
+      - KEYCLOAK_CLIENT_SECRET=your-fido-client-secret
+      - PYTHONWARNINGS=ignore:Unverified HTTPS request
+    ports:
+      - "5002:5000"
+    depends_on:
+      - keycloak
+    networks:
+      app-network:
+        ipv4_address: 172.29.0.7
+    extra_hosts:
+      - "keycloak:172.29.0.3"
+
   dns-proxy:
       image: andyshinn/dnsmasq
       container_name: dns-proxy

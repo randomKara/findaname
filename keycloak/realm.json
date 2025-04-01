@@ -44,6 +44,28 @@
       "authenticationFlowBindingOverrides": {
         "browser": "70ee2a6a-4de8-4121-a197-53113b433801"
       }
+    },
+    {
+      "clientId": "flask-app-fido",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "your-fido-client-secret",
+      "redirectUris": ["http://localhost:5002/*"],
+      "webOrigins": ["http://localhost:5002"],
+      "defaultClientScopes": [
+        "openid",
+        "profile",
+        "roles"
+      ],
+      "authenticationFlowBindingOverrides": {
+        "browser": "70ee2a6a-4de8-4121-a197-53113b433801"
+      }
     }
   ],
   "roles": {
