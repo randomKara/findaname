@@ -1,4 +1,4 @@
-# Démonstration d'Authentification avec Keycloak et FIDO
+# Démonstration de differents type d'Authentification avec Keycloak
 
 Ce projet est une démonstration d'un système d'authentification utilisant Keycloak comme fournisseur d'identité et différentes méthodes d'authentification, incluant les mots de passe traditionnels, les Passkeys et les clés de sécurité FIDO USB.
 
@@ -8,14 +8,18 @@ Le système est composé de plusieurs services Docker interconnectés :
 
 - **Keycloak** : Serveur d'identité et d'authentification
 - **OpenLDAP** : Annuaire utilisateurs (backend pour Keycloak)
-- **Flask App** : Application web utilisant l'authentification par mot de passe
-- **Flask App Passkey** : Application web utilisant l'authentification par Passkey
+- **Flask App** : Application web utilisant l'authentification par mot de passe & OTP (One Time Password)
+- **Flask App Passkey** : Application web utilisant l'authentification par Passkey en utilisant KeePassXC
 - **Flask App FIDO** : Application web utilisant l'authentification par clé FIDO USB
+
+A noter que dans la pratique 5001 et 5002 fonctionnent de manière identique pour l'utilisateur. Dans les deux cas FIDO & KeePassXC peuvent être utilisé.
 
 ## Prérequis
 
 - Docker et Docker Compose
+- L'application FreeOTP ou Google Authenticator
 - Un navigateur moderne compatible WebAuthn (Chrome, Firefox, Edge, Safari)
+- L'application et l'extention web KeePassXC (https://keepassxc.org/) (aide: https://www.youtube.com/watch?v=7Q3YrgKS9vw)
 - Une clé de sécurité FIDO pour la démonstration de l'authentification par clé USB
 - Système Debian 12 (Bookworm) ou compatible
 
@@ -54,7 +58,7 @@ Le système est composé de plusieurs services Docker interconnectés :
 
 ### Interface d'administration Keycloak
 
-- URL : https://localhost:8443/admin
+- URL : https://localhost:8443 | http://localhost:8080 (ou replancer localhost par keycloak)
 - Identifiants : admin / admin
 
 ### Inscription et gestion des clés de sécurité
@@ -82,30 +86,34 @@ Si vous rencontrez des problèmes de détection de la clé, vous pouvez effectue
 
 ## Structure du projet
 
-```
+```bash
 keycloak-fido-demo/
-├── docker-compose.yml
-├── flask-app/              # Application OTP
-│   ├── app.py
+├── dnsmasq.conf              # Configuration du DNS
+├── docker-compose.yml        # Configuration des services et du réseau Docker
+├── flask-app/                # Application avec authentification par MDP & OTP
+│   ├── app.py                # Application Flask avec OAuth2 pour Keycloak
 │   ├── Dockerfile
 │   ├── requirements.txt
 │   └── templates/
-├── flask-app-passkey/      # Application avec Passkey
-│   ├── app.py
+│       └── home.html         # Page d'accueil avec gestion des rôles admin
+├── flask-app-passkey/        # Application avec authent par Passkey
+│   ├── app.py                # Application Flask avec support WebAuthn
 │   ├── Dockerfile
 │   ├── requirements.txt
 │   └── templates/
-├── flask-app-fido/         # Application avec clé FIDO USB
-│   ├── app.py
+│       └── home.html         # Page avec vérification du support WebAuthn
+├── flask-app-fido/           # Application avec authent par clé FIDO USB
+│   ├── app.py                # Application Flask avec support FIDO
 │   ├── Dockerfile
 │   ├── requirements.txt
 │   └── templates/
-├── keycloak/
-│   ├── certs/
+│       └── home.html         # Page avec vérification du support FIDO
+├── keycloak/                 # Configuration du serveur d'authentification
+│   ├── certs/                # Certificats SSL auto-signés pour HTTPS
 │   ├── Dockerfile
-│   └── realm.json
-└── ldap/
-    └── ...
+│   └── realm.json            # Configuration du realm, clients et flux d'auth
+└── ldap/                     # Serveur OpenLDAP pour le stockage des users
+    └── bootstrap/            # Scripts d'init avec utilisateurs de test
 ```
 
 ## Fonctionnement
